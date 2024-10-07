@@ -31,6 +31,9 @@ struct ContentView: View {
             .init(
                 offset: .init(width: -100, height: 0),
                 color: .yellow),
+            .init(
+                offset: .init(width: 0, height: 0),
+                color: .red),
         ]
     }
     
@@ -48,15 +51,20 @@ struct ContentView: View {
         
         // starts the animation sequence when the view appears
             .onAppear {
-                for (index, data) in
-                        AnimationData.array.enumerated()
-                    .dropFirst() {
-                    // adds a delay with each step
-                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(index)) {
-                        animatedData = data
+                startAnimationLoop()
+            }
+    }
+    private func startAnimationLoop() {
+        for (index, data) in AnimationData.array.enumerated().dropFirst() {
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(index)) {
+                animatedData = data
+                if index == AnimationData.array.count - 1 {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(0)) {
+                        startAnimationLoop()
                     }
                 }
             }
+        }
     }
 }
 
